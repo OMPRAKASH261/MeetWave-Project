@@ -5,7 +5,14 @@ let messages = {}
 let timeOnline = {}
 
 export const connectToSocket = (server) => {
-    const io = new Server(server);
+    const io = new Server(server, {
+        cors: {
+            origin: "*",
+            methods: ["GET", "POST"],
+            allowedHeaders: ["*"],
+            credentials: true
+        }
+    });
 
     io.on("connection", (socket) => {
         
@@ -28,7 +35,7 @@ export const connectToSocket = (server) => {
 
             if (messages[path] !== undefined){
                 for(let a = 0; a < messages[path].length; ++a){
-                    io.to(socket.id).emit("char-message", messages[path][a]['data'],
+                    io.to(socket.id).emit("chat-message", messages[path][a]['data'],
                         messages[path][a]['sender'], messages[path][a]['socket-id-sender']
                     )
                 }
@@ -42,7 +49,7 @@ export const connectToSocket = (server) => {
         socket.on("chat-message", (data, sender) => {
 
             const [matchingRoom, found] = Object.entries(connections)
-                .reduce(([matchingRoom, isFound], [roomKey, roomValue]) => {
+                .reduce(([room, isFound], [roomKey, roomValue]) => {
                     
                     if(!isFound && roomValue.includes(socket.id)){
                         return [roomKey, true];
