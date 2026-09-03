@@ -1,3 +1,8 @@
-const server = process.env.REACT_APP_API_URL || "http://localhost:8000";
+let IS_PROD = true;
+const server = IS_PROD ?
+        "https://meetwavebackend.onrender.com" :
+        
+        "http://localhost:8000" 
+      
 
 export default server;
