@@ -10,6 +10,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AuthContext } from '../contexts/AuthContext.jsx';
 import { Snackbar } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -19,7 +20,7 @@ const defaultTheme = createTheme();
 
 export default function Authentication() {
 
-    
+    const navigate = useNavigate();
 
     const [username, setUsername] = React.useState();
     const [password, setPassword] = React.useState();
@@ -38,9 +39,10 @@ export default function Authentication() {
     let handleAuth = async () => {
         try {
             if (formState === 0) {
-
-                let result = await handleLogin(username, password)
-
+                const loginSuccess = await handleLogin(username, password);
+                if (loginSuccess) {
+                    navigate('/home');
+                }
             }
             if (formState === 1) {
                 let result = await handleRegister(name, username, password);
@@ -55,7 +57,7 @@ export default function Authentication() {
         } catch (err) {
 
             console.log(err);
-            let message = (err.response.data.message);
+            let message = (err.response?.data?.message) || "Something went wrong";
             setError(message);
         }
     }

@@ -34,3 +34,13 @@ react router -> `npm i react-router-dom`
 fontend terminal - `npm install @mui/material @emotion/react @emotion/styled`
 `npm install axios http-status socket.io-client`
 `npm install @mui/icons-material @mui/material @emotion/styled @emotion/react`
+
+## stun servers :-
+Stun server are lightweight servers running on the public internet which return the IP address of the 
+requesters's device.
+`https://gist.github.com/mondain/b0ec1cf5f60ae726202e`
+
+webRTC connection
+
+## logo
+website:- updraw.co
