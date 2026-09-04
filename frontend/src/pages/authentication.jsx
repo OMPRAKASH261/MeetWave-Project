@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
@@ -30,11 +31,21 @@ export default function Authentication() {
     const [formState, setFormState] = React.useState(0);
 
     const [open, setOpen] = React.useState(false)
+    const [isSubmitting, setIsSubmitting] = React.useState(false)
 
 
     const { handleRegister, handleLogin } = React.useContext(AuthContext);
 
     let handleAuth = async () => {
+        if (isSubmitting) return;
+
+        if (!username || !password || (formState === 1 && !name)) {
+            setError("Please fill in all required fields");
+            return;
+        }
+
+        setError("");
+        setIsSubmitting(true);
         try {
             if (formState === 0) {
                 const loginSuccess = await handleLogin(username, password);
@@ -55,8 +66,12 @@ export default function Authentication() {
         } catch (err) {
 
             console.log(err);
-            let message = (err.response?.data?.message) || "Something went wrong";
+            let message = err.code === "ECONNABORTED"
+                ? "The server is waking up. Please try again."
+                : (err.response?.data?.message) || "Something went wrong";
             setError(message);
+        } finally {
+            setIsSubmitting(false);
         }
     }
 
@@ -157,8 +172,9 @@ export default function Authentication() {
                                 variant="contained"
                                 sx={{ mt: 3, mb: 2 }}
                                 onClick={handleAuth}
+                                disabled={isSubmitting}
                             >
-                                {formState === 0 ? "Login " : "Register"}
+                                {isSubmitting ? <CircularProgress size={24} color="inherit" /> : formState === 0 ? "Login" : "Register"}
                             </Button>
 
                         </Box>
